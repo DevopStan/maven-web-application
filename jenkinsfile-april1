@@ -1,0 +1,54 @@
+node{
+    def mavenHome = tool name: 'maven'
+    
+    stage('1.clonecode'){
+        //jenkins running on a linux system
+        //sh "git clone https://github.com/Landmarktechnology/maven-web-application"
+        git "https://github.com/DevopStan/maven-web-application.git"
+        //jenkins running on a windows system
+        //bat "git clone https://github.com/Landmarktechnology/maven-web-application"
+    }
+    stage('2.mvnBuild') {
+       sh "${mavenHome}/bin/mvn clean package"
+    }
+    /*stage('3.CodeQuality'){
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+        //edit pom.xml propertiesTAG with SonarQube server details
+    }
+    stage('4.UploadArtifacts'){
+        sh "${mavenHome}/bin/mvn deploy"
+        //edit pom.xml distributionManagement TAG with repository
+        //edit settings.xml with nexus-user login credentials
+    }*/
+    stage('5.Deploy2UAT'){
+        //use deploy-to-container plugin via pipeline syntax
+        deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://54.198.82.29:8177/')], contextPath: null, war: 'target/*war'
+    }
+    stage('6.ManualApproval'){
+        sh "echo 'Please review the application performance' "
+        timeout(time:600, unit:'Minutes') {
+        input message: 'Application ready for deployment, Please review and approve'    
+        }
+    }
+    stage ('7.Deploy2PRod'){
+        sh "echo 'Deploy application to the customers/production' "
+        deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://54.198.82.29:8177/')], contextPath: null, war: 'target/*war'
+    }
+    stage('8.APM'){
+        sh "echo 'monitoring and observation and alerting' "
+        sh "echo 'application performance monitoring in progress' "
+    }
+    stage('9.emailNotification'){
+        sh "echo 'notify the team for unusual accurances' "
+        sh "echo 'notify the tieam if the applications are down' "
+        sh "echo 'notify the team if the latency is higher that expected' "
+        emailext body: '''Hi team,
+
+The build and deployment status of tesla-app follows
+
+regards 
+Landmarktechnology''', recipientProviders: [buildUser(), developers(), requestor(), contributor()], subject: 'build and deployment status', to: 'Landmarktech@gmail.xom
+        
+    }
+}
+
