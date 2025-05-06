@@ -10,7 +10,7 @@ pipeline {
 
         stage('2-mavenBuild') {
             steps {
-                withEnv(["PATH=${tool 'maven_3.8.2'}/bin:${env.PATH}"]) {
+                withEnv(["PATH=${tool 'maven 3.8.2'}/bin:${env.PATH}"]) {
                     sh 'mvn clean package'
                 }
             }
@@ -18,7 +18,7 @@ pipeline {
 
         stage('3-CodeQuality') {
             steps {
-                withEnv(["PATH=${tool 'maven_3.8.2'}/bin:${env.PATH}"]) {
+                withEnv(["PATH=${tool 'maven 3.8.2'}/bin:${env.PATH}"]) {
                     sh 'mvn sonar:sonar'
                 }
             }
