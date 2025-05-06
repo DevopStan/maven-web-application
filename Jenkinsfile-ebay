@@ -1,15 +1,35 @@
 def mavenHome = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'  // Adjust to the correct version
 
-withEnv(["MAVEN_HOME=${mavenHome}", "PATH=${mavenHome}/bin:${env.PATH}"]) {
-  stage('1-Clone') {
-    git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
-  }
+pipeline {
+    agent any
 
-  stage('2-mavenBuild') {
-    sh "${mavenHome}/bin/mvn clean package"
-  }
+    environment {
+        MAVEN_HOME = mavenHome
+        PATH = "${mavenHome}/bin:${env.PATH}"
+    }
 
-  stage('3-CodeQuality') {
-    sh "${mavenHome}/bin/mvn sonar:sonar"
-  }
+    stages {
+        stage('1-Clone') {
+            steps {
+                git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
+            }
+        }
+
+        stage('2-mavenBuild') {
+            steps {
+                script {
+                    sh "${mavenHome}/bin/mvn clean package"
+                }
+            }
+        }
+
+        stage('3-CodeQuality') {
+            steps {
+                script {
+                    sh "${mavenHome}/bin/mvn sonar:sonar"
+                }
+            }
+        }
+    }
 }
+
