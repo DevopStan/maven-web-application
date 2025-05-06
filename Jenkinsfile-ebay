@@ -1,11 +1,9 @@
-def mavenHome = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'
-
 pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = "${mavenHome}"
-        PATH = "${mavenHome}/bin:${env.PATH}"
+        MAVEN_HOME = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'
+        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
     }
 
     stages {
@@ -17,17 +15,13 @@ pipeline {
 
         stage('2-mavenBuild') {
             steps {
-                dir('/home/ec2-user/mwa') {
-                    sh 'mvn clean package'
-                }
+                sh 'mvn clean package'
             }
         }
 
         stage('3-CodeQuality') {
             steps {
-                dir('/home/ec2-user/mwa') {
-                    sh 'mvn sonar:sonar'
-                }
+                sh 'mvn sonar:sonar'
             }
         }
     }
