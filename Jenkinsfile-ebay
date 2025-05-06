@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven_3.8.2' // Name exactly as defined in Jenkins
-    }
-
     stages {
         stage('1-Clone') {
             steps {
@@ -14,17 +10,22 @@ pipeline {
 
         stage('2-mavenBuild') {
             steps {
-                sh 'mvn clean package'
+                withEnv(["PATH=${tool 'maven_3.8.2'}/bin:${env.PATH}"]) {
+                    sh 'mvn clean package'
+                }
             }
         }
 
         stage('3-CodeQuality') {
             steps {
-                sh 'mvn sonar:sonar'
+                withEnv(["PATH=${tool 'maven_3.8.2'}/bin:${env.PATH}"]) {
+                    sh 'mvn sonar:sonar'
+                }
             }
         }
     }
 }
+
 
 
 
