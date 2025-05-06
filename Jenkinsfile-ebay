@@ -1,31 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        MAVEN_HOME = '/opt/maven'  // Path to Maven home
-        PATH = "${MAVEN_HOME}/bin:${env.PATH}"  // Add Maven bin directory to PATH
+    tools {
+        maven 'Maven_3.8.6'  // Match the name you gave in Global Tool Configuration
     }
 
     stages {
-        stage('1-Clone') {
+        stage('Clone') {
             steps {
-                git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
+                git credentialsId: 'GitHub-Credentials', url: 'https://github.com/DevopStan/maven-web-application'
             }
         }
 
-        stage('2-mavenBuild') {
+        stage('Build') {
             steps {
-                script {
-                    sh "${MAVEN_HOME}/bin/mvn clean package"
-                }
+                sh 'mvn clean package'
             }
         }
 
-        stage('3-CodeQuality') {
+        stage('Code Quality') {
             steps {
-                script {
-                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
-                }
+                sh 'mvn sonar:sonar'
             }
         }
     }
