@@ -2,30 +2,23 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven 3.8.2'  // This must match the name in Jenkins > Global Tool Configuration
+        maven 'maven 3.8.2'  // Use the same name as you set in Global Tool Configuration
     }
 
     stages {
-        stage('1-Clone') {
-            steps {
-                git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
-            }
-        }
-
-        stage('2-Build') {
+        stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
 
-        stage('3-CodeQuality') {
+        stage('Code Quality') {
             steps {
                 sh 'mvn sonar:sonar'
             }
         }
     }
 }
-
 
 
 
