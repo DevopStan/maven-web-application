@@ -1,8 +1,9 @@
- node {
-  def mavenHome = tool name: 'maven 3.8.2'
+node {
+  // Set Maven home manually if Maven is installed on a specific path
+  def mavenHome = '/opt/maven'  // Adjust this if Maven is installed elsewhere
 
   // Set environment variables for Maven
-  withEnv(["MAVEN_HOME=/opt/maven", "PATH=${mavenHome}/bin:${env.PATH}"]) {
+  withEnv(["MAVEN_HOME=${mavenHome}", "PATH=${mavenHome}/bin:${env.PATH}"]) {
 
     stage('1-Clone') {
       git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
