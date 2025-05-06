@@ -1,9 +1,11 @@
+def mavenHome = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'
+
 pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'
-        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
+        MAVEN_HOME = "${mavenHome}"
+        PATH = "${mavenHome}/bin:${env.PATH}"  // Add Maven to PATH
     }
 
     stages {
@@ -15,14 +17,15 @@ pipeline {
 
         stage('2-mavenBuild') {
             steps {
-                sh 'mvn clean package'
+                sh "${MAVEN_HOME}/bin/mvn clean package"
             }
         }
 
         stage('3-CodeQuality') {
             steps {
-                sh 'mvn sonar:sonar'
+                sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
             }
         }
     }
 }
+
