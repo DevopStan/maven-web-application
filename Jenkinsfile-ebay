@@ -1,19 +1,15 @@
-node {
-  // Set Maven home explicitly if needed
-  def mavenHome = '/opt/maven'  // Adjust if Maven is installed elsewhere
+def mavenHome = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'  // Adjust to the correct version
 
-  withEnv(["MAVEN_HOME=${mavenHome}", "PATH=${mavenHome}/bin:${env.PATH}"]) {
+withEnv(["MAVEN_HOME=${mavenHome}", "PATH=${mavenHome}/bin:${env.PATH}"]) {
+  stage('1-Clone') {
+    git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
+  }
 
-    stage('1-Clone') {
-      git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
-    }
+  stage('2-mavenBuild') {
+    sh "${mavenHome}/bin/mvn clean package"
+  }
 
-    stage('2-mavenBuild') {
-      sh "${mavenHome}/bin/mvn clean package"
-    }
-
-    stage('3-CodeQuality') {
-      sh "${mavenHome}/bin/mvn sonar:sonar"
-    }
+  stage('3-CodeQuality') {
+    sh "${mavenHome}/bin/mvn sonar:sonar"
   }
 }
