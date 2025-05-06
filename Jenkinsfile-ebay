@@ -1,11 +1,12 @@
-def mavenHome = '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven_3.9.9'
-
 pipeline {
     agent any
 
+    tools {
+        maven 'maven 3.8.2'  // This should match the name from Jenkins -> Global Tool Configuration
+    }
+
     environment {
-        MAVEN_HOME = "${mavenHome}"
-        PATH = "${mavenHome}/bin:${env.PATH}"  // Add Maven to PATH
+        PATH = "${tool 'maven 3.8.2'}/bin:${env.PATH}"
     }
 
     stages {
@@ -17,15 +18,16 @@ pipeline {
 
         stage('2-mavenBuild') {
             steps {
-                sh "${MAVEN_HOME}/bin/mvn clean package"
+                sh 'mvn clean package'
             }
         }
 
         stage('3-CodeQuality') {
             steps {
-                sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
+                sh 'mvn sonar:sonar'
             }
         }
     }
 }
+
 
