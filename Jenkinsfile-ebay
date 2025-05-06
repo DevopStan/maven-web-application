@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven 3.8.2'  // This must match the name in Jenkins > Global Tool Configuration
+    }
+
     stages {
         stage('1-Clone') {
             steps {
@@ -8,23 +12,20 @@ pipeline {
             }
         }
 
-        stage('2-mavenBuild') {
+        stage('2-Build') {
             steps {
-                withEnv(["PATH=${tool 'maven 3.8.2'}/bin:${env.PATH}"]) {
-                    sh 'mvn clean package'
-                }
+                sh 'mvn clean package'
             }
         }
 
         stage('3-CodeQuality') {
             steps {
-                withEnv(["PATH=${tool 'maven 3.8.2'}/bin:${env.PATH}"]) {
-                    sh 'mvn sonar:sonar'
-                }
+                sh 'mvn sonar:sonar'
             }
         }
     }
 }
+
 
 
 
