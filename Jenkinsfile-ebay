@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven 3.8.2'  // This should match the name from Jenkins -> Global Tool Configuration
-    }
-
-    environment {
-        PATH = "${tool 'maven 3.8.2'}/bin:${env.PATH}"
+        maven 'maven_3.8.2' // Name exactly as defined in Jenkins
     }
 
     stages {
@@ -29,5 +25,6 @@ pipeline {
         }
     }
 }
+
 
 
