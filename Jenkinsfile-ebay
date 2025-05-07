@@ -1,9 +1,9 @@
 node {
   // Define Maven tool installation
-  def mavenHome = tool name: 'Maven_3.8.2'
+  def mavenHome = tool name: 'Maven3'
 
   stage('1-Clone') {
-    git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/Landmark-Technologies/maven-web-application'
+    git credentialsId: 'GitHUB-CREDENTIALS', url: 'https://github.com/DevopStan/maven-web-application'
   }
 
   stage('2-mavenBuild') {
